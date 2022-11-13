@@ -81,7 +81,8 @@ switch($method) {
         $stmt->bindParam(':address', $contact->contact_address);
 
         if($stmt->execute()) {
-            $response = ['status' => 1, 'message' => 'Record updated successfully.'];
+            // $response = ['status' => 1, 'message' => 'Record updated successfully.'];
+            $response = ['id' => $contact->c_id, 'last_name' => $contact->last_name];
         } else {
             $response = ['status' => 0, 'message' => 'Failed to update record.'];
         }

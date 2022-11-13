@@ -1,5 +1,6 @@
 import React from 'react'
 // import userImg from '../images/User-svg.png';
+import EditContact from './EditContact';
 import {useLocation, Link} from 'react-router-dom';
 
 export default function ContactDetails(props) {
@@ -22,6 +23,7 @@ export default function ContactDetails(props) {
                 </div>
             </div>
             <Link to="/" style={{marginTop:"10px"}} className='ui grid centered'>Back to Contact List</Link>
+            <Link to={`/editContact`} state={{ contactDetail: location.state.contactDetail }} style={{marginTop:"10px"}} className='ui grid centered'>Edit Contact</Link>
         </div>
     )
 }
