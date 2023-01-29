@@ -21,11 +21,6 @@ export default function AddContact(props) {
     file:null,
     contact_address:""
   };
-  // const [file, setFile] = useState();
-
-  // const handlePhoto = (e) => {
-  //   setFile(e.target.files[0]);
-  // }
 
   const {
     handleChange,
@@ -41,7 +36,6 @@ export default function AddContact(props) {
     initialValues: initialFormValues,
     validationSchema: FormSchema,
     onSubmit: async (values, actions) => {
-      const baseURL = "http://localhost/contact-app/backend/contacts/";
       const uniqueFileName = v4();
       const uniqueId = v4();
       const formData = new FormData();
@@ -53,7 +47,7 @@ export default function AddContact(props) {
       formData.append('file', values.file);
       formData.append('uniqueFileName', uniqueFileName);
       formData.append('contact_address', values.contact_address);
-      const res = await axios.post(baseURL, formData).then((response) => {
+      const res = await axios.post(props.baseURL, formData).then((response) => {
           console.log(response.data);
         });
       props.UpdateContactListHandler();

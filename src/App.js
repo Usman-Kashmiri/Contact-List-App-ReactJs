@@ -10,7 +10,8 @@ import './App.css';
 import ContactDetails from './ContactDetails';
 import UpdatePhoto from "./UpdatePhoto";
 
-const baseURL = "http://localhost/contact-app/backend/contacts/";
+// const baseURL = "http://localhost/contact-app/backend/contacts/";
+const baseURL = "https://care-hms.000webhostapp.com/backend/contacts/";
 
 
 function App() {
@@ -25,15 +26,8 @@ function App() {
     });
   };
 
-  // const updateContactHandler = async () => {
-      // const res = await axios.put(`${baseURL}${id}/edit`, newContact)
-  //     const response = await axios.get(baseURL).then((response) => {
-  //       setContacts(response.data);
-  //     });
-  // }
-
   const removeContactHandler = async (id) => {
-    const res = await axios.delete(`${baseURL}${id}/delete`);
+    const res = await axios.delete(`${baseURL}${id}`);
     const newContactList = contacts.filter((contact) => {
       return contact.c_id !== id;
     });
@@ -68,8 +62,8 @@ function App() {
       <div className='ui container'>
         <Routes>
           <Route path='/' element={<ContactList contacts={searchContact.length < 1 ? contacts : searchResults} getContactId={removeContactHandler} term={searchContact} searchKeyword={searchHandler} />} />
-          <Route path='/AddContact' element={<AddContact UpdateContactListHandler={updateContactListHandler} />} />
-          <Route path='/EditContact' element={<EditContact UpdateContactListHandler={updateContactListHandler} />} />
+          <Route path='/AddContact' element={<AddContact baseURL={baseURL} UpdateContactListHandler={updateContactListHandler} />} />
+          <Route path='/EditContact' element={<EditContact baseURL={baseURL} UpdateContactListHandler={updateContactListHandler} />} />
           <Route path='/ContactDetails/:id' element={<ContactDetails />} />
           <Route path='/UpdateContactPhoto/:id' element={<UpdatePhoto UpdateContactListHandler={updateContactListHandler} />} />
         </Routes>

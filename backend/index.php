@@ -7,11 +7,11 @@ $conn = $objDb->connect();
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-switch($method) {
+switch ($method) {
     case "GET":
         $sql = "SELECT * FROM contactlist";
         $path = explode('/', $_SERVER['REQUEST_URI']);
-        if(isset($path[3]) && is_numeric($path[3])) {
+        if (isset($path[3]) && is_numeric($path[3])) {
             $sql .= " WHERE c_id = :id";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':id', $path[3]);
@@ -26,7 +26,7 @@ switch($method) {
         echo json_encode($contacts);
         break;
     case "POST":
-        $contact = json_decode( file_get_contents('php://input') );
+        $contact = json_decode(file_get_contents('php://input'));
         // if(isset($_FILES['file'])) {
         $file = $_FILES['file'];
         $uniqueFileName = $_POST['uniqueFileName'];
@@ -35,11 +35,11 @@ switch($method) {
         $file_tmpName = $_FILES['file']['tmp_name'];
         // $file_size = $_FILES['file']['size'];
         // $encodedFile = uniqid().'.'.$file_type;
-        $splitedFileName = explode('.',$file_name);
-        $fileExtension=strtolower(end($splitedFileName));
-        $newFile = $uniqueFileName.'.'.$fileExtension;
-        $imagePath = '../backend/images/'.$newFile;
-        move_uploaded_file($file_tmpName,'images/'.$newFile);
+        $splitedFileName = explode('.', $file_name);
+        $fileExtension = strtolower(end($splitedFileName));
+        $newFile = $uniqueFileName . '.' . $fileExtension;
+        $imagePath = '../backend/images/' . $newFile;
+        move_uploaded_file($file_tmpName, 'images/' . $newFile);
         $cId = $_POST['c_id'];
         $firstName = $_POST['first_name'];
         $lastName = $_POST['last_name'];
@@ -59,7 +59,7 @@ switch($method) {
         $stmt->bindParam(':imagename', $newFile);
         $stmt->bindParam(':address', $address);
 
-        if($stmt->execute()) {
+        if ($stmt->execute()) {
             $response = ['status' => 1, 'message' => 'Record inserted successfully.'];
         } else {
             $response = ['status' => 0, 'message' => 'Failed to insert record.'];
@@ -80,9 +80,8 @@ switch($method) {
         // $stmt->bindParam(':img', $contact->image_path);
         $stmt->bindParam(':address', $contact->contact_address);
 
-        if($stmt->execute()) {
-            // $response = ['status' => 1, 'message' => 'Record updated successfully.'];
-            $response = ['id' => $contact->c_id, 'last_name' => $contact->last_name];
+        if ($stmt->execute()) {
+            $response = ['status' => 1, 'message' => 'Record updated successfully.'];
         } else {
             $response = ['status' => 0, 'message' => 'Failed to update record.'];
         }
@@ -90,13 +89,29 @@ switch($method) {
         break;
 
     case "DELETE":
-        $sql = "DELETE FROM contactlist WHERE c_id = :id";
+        
         $path = explode('/', $_SERVER['REQUEST_URI']);
+
+        $select = "SELECT image_name, image_path FROM contactlist WHERE c_id = :id";
+
+        $result = $conn->prepare($select);
+        $result->bindParam(':id', $path[4]);
+
+        if ($result->execute()) {
+            $row = $result->fetch();
+            $oldImage = $row["image_name"];
+            $oldImagePath = './images/'.$oldImage;
+            if (file_exists($oldImagePath)) {
+                unlink($oldImagePath);
+            }
+        }
+
+        $sql = "DELETE FROM contactlist WHERE c_id = :id";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':id', $path[4]);
 
-        if($stmt->execute()) {
+        if ($stmt->execute()) {
             $response = ['status' => 1, 'message' => 'Record deleted successfully.'];
         } else {
             $response = ['status' => 0, 'message' => 'Failed to delete record.'];
@@ -104,5 +119,3 @@ switch($method) {
         echo json_encode($response);
         break;
 }
-
-?>

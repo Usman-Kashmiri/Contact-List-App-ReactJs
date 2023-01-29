@@ -2,7 +2,6 @@ import { useFormik } from 'formik';
 import React from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from 'axios';
-import { FormSchema } from './FormSchema';
 import * as yup from "yup";
 
 export default function EditContact(props) {
@@ -40,8 +39,7 @@ export default function EditContact(props) {
         initialValues: initialFormValues,
         validationSchema: EditFormSchema,
         onSubmit: async (values) => {
-            const baseURL = "http://localhost/contact-app/backend/contacts/";
-            const res = await axios.put(`${baseURL}/${c_id}`, values).then((response) => {
+            const res = await axios.put(`${props.baseURL}${c_id}`, values).then((response) => {
                 console.log(response.data);
             });
             props.UpdateContactListHandler();
